@@ -78,6 +78,8 @@ float JPEGencoder::encode_cpu() {
 	int lastYDC=0, lastCbDC=0, lastCrDC=0;
 	codelen=0;
 	
+	clock_t startTime=clock();
+	
 	for(int i=0; i<n; i+=MCUSIZE)
 		for(int j=0; j<m; j+=MCUSIZE) {		// for each MCU :
 			// extract RGB
@@ -94,4 +96,8 @@ float JPEGencoder::encode_cpu() {
 			encode_block(lastCbDC,Cb,cq,zigzag,C_DC_T,C_AC_T);
 			encode_block(lastCrDC,Cr,cq,zigzag,C_DC_T,C_AC_T);
 		}
+	
+	clock_t endTime=clock();
+	
+	return endTime-startTime;
 }
