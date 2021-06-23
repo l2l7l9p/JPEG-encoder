@@ -1,4 +1,7 @@
-#include<bits/stdc++.h>
+// #include<bits/stdc++.h>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
 using namespace std;
 
 #ifndef HEADER
@@ -37,7 +40,7 @@ class JPEGencoder {
 	void read_graph(string path);	// read RGB graph from <path> to graph[][][3]
 	float encode_cpu();				// encode with cpu and return the time(ms)
 	float encode_gpu();				// encode with gpu and return the time(ms)
-	void huffman_coding();
+	void huffman_coding(int val1, int val2, const int *huffTable);
 };
 
 #endif

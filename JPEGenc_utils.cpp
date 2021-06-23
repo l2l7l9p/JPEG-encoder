@@ -1,4 +1,15 @@
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+
 #include"JPEGenc.h"
+
 
 const char JPEGencoder::lq[64]={
 	16, 11, 10, 16, 24, 40, 51, 61,
@@ -54,4 +65,43 @@ void JPEGencoder::huffman_coding(int val1,int val2,const int *huffTable) {
 	int val1size=get_size(val1)-1;
 	codes[codelen][0]=val1size+val2size;
 	codes[codelen][1]=((huffTable[val1]^(1<<val1size))<<val2size)+(val2>=0 ?val2 :(val2-1)&((1<<val2size)-1));
+}
+
+
+// tools code
+void JPEGencoder::read_graph(string path)	// read RGB graph from <path> to graph[][][3]
+{
+    // int count = 0;
+    // cudaGetDeviceCount(&count);
+    // if (count > 0) { // cuda
+    //     srand(time(NULL));
+    //     for (int i = 0; i < MAXN; ++ i){
+    //         for (int j = 0; j < MAXM; ++ j){
+    //             for (int k = 0; k < 3; ++ k){
+    //                 graph[i * MAXM * 3 + j * 3 + k] = rand() % 256;
+    //             }
+    //         }
+    //     }
+    // } else { // cpu
+    //     int channel;
+    //     unsigned char *tmpData = stbi_load(path, &n, &m, &channel, 0);
+    //     for (int i = 0 ; i < n; ++ i){
+    //         for (int j = 0; j < m; ++ j){
+    //             for (int k = 0; k < 3; ++ k){
+    //                 graph[i * 3 * m + j * 3 + k] = tmpData[i * 3 * m + j * 3 + k];
+    //             }
+    //         }
+    //     }
+    //     stbi_image_free(tmpData);
+    // }
+	int channel;
+	unsigned char *tmpData = stbi_load(path.c_str(), &n, &m, &channel, 0);
+	for (int i = 0 ; i < n; ++ i){
+		for (int j = 0; j < m; ++ j){
+			for (int k = 0; k < 3; ++ k){
+				graph[i * 3 * m + j * 3 + k] = tmpData[i * 3 * m + j * 3 + k];
+			}
+		}
+	}
+	stbi_image_free(tmpData);
 }

@@ -1,8 +1,12 @@
 #include<cmath>
+#include <cstdio>
+#include <tuple>
 #include"JPEGenc.h"
 using namespace std;
 
 const float pi=acos(-1);
+extern int get_size(int x);
+
 
 UC R[MCUSIZE][MCUSIZE],G[MCUSIZE][MCUSIZE],B[MCUSIZE][MCUSIZE];
 
@@ -20,6 +24,9 @@ void extract_YCbCr_and_subsample(const float *T,const float *bias) {
 
 int F[BLOCKSIZE*BLOCKSIZE];
 void DCT_and_quantize(float img[][BLOCKSIZE], const char *qTable, const char *zigzag) {
+	for(int u=0; u<8; u++)
+		for(int v=0; v<8; v++) printf("%.2f ",img[u][v]);
+	puts("");
 	for(int u=0; u<BLOCKSIZE; u++)
 		for(int v=0; v<BLOCKSIZE; v++) {
 			float Ff=0;
@@ -54,11 +61,19 @@ void encode_block(
 ) {
 	// DCT and quantize
 	DCT_and_quantize(img,qTable,zigzag);
+	puts("haha1");
+	fflush(stdout);
 	// DC coding
 	ts->huffman_coding(0,F[0]-lastDC,DC_T);
 	lastDC=F[0];
+	puts("haha2");
+	fflush(stdout);
 	// AC coding
+	for(int i=0; i<64; i++) printf("%d ",F[i]);
+	puts("");
 	AC_coding(AC_T,ts);
+	puts("haha3");
+	fflush(stdout);
 }
 
 float JPEGencoder::encode_cpu() {
@@ -68,6 +83,7 @@ float JPEGencoder::encode_cpu() {
 	codelen=0;
 	for(int i=0; i<n; i+=MCUSIZE)
 		for(int j=0; j<m; j+=MCUSIZE) {		// for each MCU :
+			printf("%d %d\n",i,j);
 			// extract RGB
 			for(int x=0; x<MCUSIZE; x++)
 				for(int y=0; y<MCUSIZE; y++) if (i+x<n && j+y<m) {
@@ -80,8 +96,14 @@ float JPEGencoder::encode_cpu() {
 			extract_YCbCr_and_subsample(T,bias);
 			// for each block: DCT, quantize, DC coding, AC coding
 			for(int yid=0; yid<4; yid++) encode_block(lastYDC,Y[yid],lq,zigzag,Y_DC_T,Y_AC_T,this);
+			printf("yes3");
+			fflush(stdout);
 			encode_block(lastCbDC,Cb,cq,zigzag,C_DC_T,C_AC_T,this);
+			printf("yes4");
+			fflush(stdout);
 			encode_block(lastCrDC,Cr,cq,zigzag,C_DC_T,C_AC_T,this);
+			printf("yes5");
+			fflush(stdout);
 		}
 	
 	clock_t endTime=clock();
