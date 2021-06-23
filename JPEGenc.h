@@ -27,7 +27,8 @@ class JPEGencoder {
 	// *************** vars *************
 	
 	int n,m;
-	float graph[MAXN][MAXM][3];
+	unsigned char graph[MAXN][MAXM][3];
+	unsigned char data[MAXN * MAXM * 3];
 	
 	// *************** constants *************
 	
