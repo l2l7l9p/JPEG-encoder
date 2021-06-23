@@ -32,7 +32,7 @@ void DCT_and_quantize(float img[][BLOCKSIZE], const char *qTable, const char *zi
 			float Ff=0;
 			for(int x=0; x<BLOCKSIZE; x++)
 				for(int y=0; y<BLOCKSIZE; y++)
-					Ff+=cos((2*x+1)*u*pi/16)*cos((2*x+1)*u*pi/16)*img[x][y];
+					Ff+=cos((2*x+1)*u*pi/16)*cos((2*y+1)*v*pi/16)*img[x][y];
 			float Cu=(u==0) ?sqrt(2)/4 :0.5 ;
 			float Cv=(v==0) ?sqrt(2)/4 :0.5 ;
 			Ff*=Cu*Cv;

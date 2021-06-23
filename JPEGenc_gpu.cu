@@ -62,7 +62,7 @@ void trans_from_device_to_host() {
 	float Ff=0, pi=acos(-1);\
 	for(int x=0; x<BLOCKSIZE; x++)\
 		for(int y=0; y<BLOCKSIZE; y++)\
-			Ff+=cos((2*x+1)*bx*pi/16)*cos((2*x+1)*by*pi/16)*Y[(tx&8)|x][(ty&8)|y];\
+			Ff+=cos((2*x+1)*bx*pi/16)*cos((2*y+1)*by*pi/16)*Y[(tx&8)|x][(ty&8)|y];\
 	Ff*=(bx==0) ?sqrt(2)/4 :0.5 ;\
 	Ff*=(by==0) ?sqrt(2)/4 :0.5 ;\
 	F[(yid<<6)+zigzag_d[bl]]=round(Ff/qTable[bl]);\
