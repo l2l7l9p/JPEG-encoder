@@ -40,3 +40,18 @@ const float JPEGencoder::T[9]={
 	0.5,-0.418688,-0.081312
 };
 const float JPEGencoder::bias[3]={-128,0,0};
+
+inline int get_size(int x) {
+	int re=0;
+	for(x=abs(x); x; x>>=1) re++;
+	return re;
+}
+
+void JPEGencoder::huffman_coding(int val1,int val2,const int *huffTable) {
+	++codelen;
+	int val2size=get_size(val2);
+	val1=huffTable[(val1<<4)|val2size];
+	int val1size=get_size(val1)-1;
+	codes[codelen][0]=val1size+val2size;
+	codes[codelen][1]=((huffTable[val1]^(1<<val1size))<<val2size)+(val2>=0 ?val2 :(val2-1)&((1<<val2size)-1));
+}

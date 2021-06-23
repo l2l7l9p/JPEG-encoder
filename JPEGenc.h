@@ -4,6 +4,8 @@ using namespace std;
 #ifndef HEADER
 #define HEADER
 
+typedef unsigned char UC;
+
 class JPEGencoder {
 	public:
 	
@@ -27,14 +29,15 @@ class JPEGencoder {
 	// *************** vars *************
 	
 	int n,m;
-	unsigned char graph[MAXN][MAXM][3];
-	unsigned char data[MAXN * MAXM * 3];
+	UC graph[MAXN*MAXM*3];
+	int codes[MAXCODELEN][2], codelen;
 	
-	// *************** constants *************
+	// *************** functions *************
 	
 	void read_graph(string path);	// read RGB graph from <path> to graph[][][3]
-	float encode_cpu();
-	float encode_gpu();
+	float encode_cpu();				// encode with cpu and return the time(ms)
+	float encode_gpu();				// encode with gpu and return the time(ms)
+	void huffman_coding();
 };
 
 #endif
