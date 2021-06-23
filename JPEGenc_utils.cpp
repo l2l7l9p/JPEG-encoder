@@ -64,7 +64,7 @@ void JPEGencoder::huffman_coding(int val1,int val2,const int *huffTable) {
 	val1=huffTable[(val1<<4)|val2size];
 	int val1size=get_size(val1)-1;
 	codes[codelen][0]=val1size+val2size;
-	codes[codelen][1]=((huffTable[val1]^(1<<val1size))<<val2size)+(val2>=0 ?val2 :(val2-1)&((1<<val2size)-1));
+	codes[codelen][1]=((val1^(1<<val1size))<<val2size)+(val2>=0 ?val2 :(val2-1)&((1<<val2size)-1));
 }
 
 

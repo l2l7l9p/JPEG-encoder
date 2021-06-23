@@ -11,7 +11,7 @@ void test_cpu() {
 
         float cost_time = a.encode_cpu();
 
-        printf("encode the %d graph cost %f s", i, cost_time);
+        printf("encode the %d graph cost %f ms\n", i, cost_time);
     }
     return ;
 }
