@@ -148,17 +148,23 @@ void encode_block(int *res,int st,int en,int &lastDC,const int *DC_T, const int 
 }
 
 float JPEGencoder::encode_gpu() {
+	clock_t t1=clock();
+	trans_from_host_to_device(n,m,graph,T,bias,zigzag,lq,cq);
+	clock_t t2=clock();
+	
 	cudaEvent_t startTime, endTime;
 	cudaEventCreate(&startTime);
 	cudaEventCreate(&endTime);
 	cudaEventRecord(startTime);
-	
-	trans_from_host_to_device(n,m,graph,T,bias,zigzag,lq,cq);
-	
 	dim3 grid((m+15)>>4,(n+15)>>4,1);
 	dim3 block(16,16,1);
 	kernel<<<grid,block>>>(n,m,G_d,T_d,bias_d,zigzag_d,lq_d,cq_d,resY_d,resCb_d,resCr_d);
-	cudaDeviceSynchronize();
+	cudaEventRecord(endTime);
+	cudaEventSynchronize(endTime);
+	float duration=0;
+	cudaEventElapsedTime(&duration,startTime,endTime);
+	
+	clock_t t3=clock();
 	
 	trans_from_device_to_host();
 	
@@ -171,9 +177,7 @@ float JPEGencoder::encode_gpu() {
 		encode_block(resCr,(i<<6),((i+1)<<6),lastCrDC,C_DC_T,C_AC_T,this);
 	}
 	
-	cudaEventRecord(endTime);
-	cudaEventSynchronize(endTime);
-	float duration=0;
-	cudaEventElapsedTime(&duration,startTime,endTime);
-	return duration;
+	clock_t t4=clock();
+	
+	return duration+(t2-t1+t4-t3)/CLOCKS_PER_SEC*1000;
 }
