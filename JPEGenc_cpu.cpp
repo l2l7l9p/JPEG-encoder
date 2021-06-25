@@ -4,9 +4,8 @@
 #include"JPEGenc.h"
 using namespace std;
 
-const float pi=acos(-1);
+const float pi=acos(-1), sqrt2=sqrt(2);
 extern int get_size(int x);
-
 
 UC R[MCUSIZE][MCUSIZE],G[MCUSIZE][MCUSIZE],B[MCUSIZE][MCUSIZE];
 
@@ -23,13 +22,18 @@ void extract_YCbCr_and_subsample(const float *T,const float *bias) {
 }
 
 int F[BLOCKSIZE*BLOCKSIZE];
+float C[BLOCKSIZE][BLOCKSIZE];
+void init_cos() {
+	for(int x=0; x<BLOCKSIZE; x++)
+		for(int u=0; u<BLOCKSIZE; u++) C[x][u]=cos((2*x+1)*u*pi/16);
+}
 void DCT_and_quantize(float img[][BLOCKSIZE], const char *qTable, const char *zigzag) {
 	for(int u=0; u<BLOCKSIZE; u++)
 		for(int v=0; v<BLOCKSIZE; v++) {
 			float Ff=0;
 			for(int x=0; x<BLOCKSIZE; x++)
 				for(int y=0; y<BLOCKSIZE; y++)
-					Ff+=cos((2*x+1)*u*pi/16)*cos((2*y+1)*v*pi/16)*img[x][y];
+					Ff+=C[x][u]*C[y][v]*img[x][y];
 			float Cu=(u==0) ?sqrt(2)/4 :0.5 ;
 			float Cv=(v==0) ?sqrt(2)/4 :0.5 ;
 			Ff*=Cu*Cv;
@@ -67,6 +71,8 @@ void encode_block(
 
 float JPEGencoder::encode_cpu() {
 	clock_t startTime=clock();
+	
+	init_cos();
 	
 	int lastYDC=0, lastCbDC=0, lastCrDC=0;
 	codelen=0;

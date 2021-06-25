@@ -5,7 +5,7 @@ JPEGencoder a;
 
 void test_cpu() {
 	string loc = "data/";
-    for (int i = 55000; i < 57000; ++ i) {
+    for (int i = 55000; i < 55011; ++ i) {
 		string path = to_string(i);
         a.read_graph(loc + path + ".png");
 
@@ -16,9 +16,9 @@ void test_cpu() {
     return ;
 }
 
-/*void test_gpu() {
+void test_gpu() {
     string loc = "data/";
-    for (int i = 55000; i < 57000; ++ i) {
+    for (int i = 55000; i < 55011; ++ i) {
 		string path = to_string(i);
         a.read_graph(loc + path + ".png");
 
@@ -27,10 +27,10 @@ void test_cpu() {
         printf("encode the %d graph cost %f ms\n", i, cost_time);
     }
     return ;
-}*/
+}
 
-int main() {
-	test_cpu();
-//     test_gpu();
+int main(int argc,char *argv[]) {
+	if (atoi(argv[1])==0) test_cpu();
+		else test_gpu();
 	return 0;
 }
